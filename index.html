@@ -1,1 +1,750 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CAM Department Review — TripFactory</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0f0e0c;
+    --paper: #f5f2ec;
+    --cream: #ede9e0;
+    --accent: #c84b1f;
+    --accent2: #2a5f8f;
+    --gold: #b8860b;
+    --muted: #7a7570;
+    --green: #2d6a4f;
+    --red: #c84b1f;
+    --amber: #b07d1a;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Instrument Sans', sans-serif;
+    font-size: 14px;
+    line-height: 1.65;
+  }
 
+  /* ── COVER ── */
+  .cover {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 60px 72px 52px;
+    position: relative;
+    overflow: hidden;
+  }
+  .cover::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 400px; height: 400px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(200,75,31,0.18) 0%, transparent 70%);
+  }
+  .cover-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+  .cover h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 52px;
+    line-height: 1.1;
+    margin-bottom: 12px;
+  }
+  .cover h1 em { color: var(--accent); font-style: normal; }
+  .cover-sub {
+    font-size: 15px;
+    color: #a8a49e;
+    margin-bottom: 40px;
+  }
+  .cover-meta {
+    display: flex; gap: 40px; flex-wrap: wrap;
+  }
+  .meta-item label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #6e6a65;
+    display: block;
+    margin-bottom: 3px;
+  }
+  .meta-item span {
+    font-size: 13px;
+    color: var(--paper);
+  }
+
+  /* ── LAYOUT ── */
+  .container { max-width: 960px; margin: 0 auto; padding: 0 40px; }
+  .section { padding: 48px 0 36px; border-bottom: 1px solid #ddd8ce; }
+  .section:last-child { border-bottom: none; }
+
+  /* ── SECTION HEADERS ── */
+  .section-header {
+    display: flex; align-items: baseline; gap: 16px;
+    margin-bottom: 28px;
+  }
+  .section-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+  }
+  .section h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 26px;
+    color: var(--ink);
+  }
+
+  /* ── STAT CARDS ── */
+  .stat-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 14px; margin-bottom: 28px; }
+  .stat-card {
+    background: var(--cream);
+    border: 1px solid #d8d2c6;
+    border-radius: 6px;
+    padding: 20px 18px;
+  }
+  .stat-card .num {
+    font-family: 'DM Serif Display', serif;
+    font-size: 36px;
+    line-height: 1;
+    color: var(--ink);
+    margin-bottom: 4px;
+  }
+  .stat-card .num.accent { color: var(--accent); }
+  .stat-card .num.green { color: var(--green); }
+  .stat-card .num.amber { color: var(--amber); }
+  .stat-card .label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  /* ── PROSE ── */
+  p { color: #3a3730; margin-bottom: 12px; }
+  p:last-child { margin-bottom: 0; }
+  strong { color: var(--ink); font-weight: 600; }
+
+  /* ── TABLES ── */
+  .table-wrap { overflow-x: auto; margin: 20px 0; }
+  table { width: 100%; border-collapse: collapse; }
+  th {
+    background: var(--ink);
+    color: var(--paper);
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 10px 14px;
+    text-align: left;
+  }
+  td { padding: 10px 14px; border-bottom: 1px solid #ddd8ce; font-size: 13px; vertical-align: top; }
+  tr:nth-child(even) td { background: #f9f7f3; }
+  tr:hover td { background: #ede9e0; }
+
+  /* ── BADGES ── */
+  .badge {
+    display: inline-block;
+    padding: 2px 9px;
+    border-radius: 3px;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+  .badge-green { background: #d4edda; color: var(--green); }
+  .badge-red { background: #fde8e0; color: var(--red); }
+  .badge-amber { background: #fef3cd; color: var(--amber); }
+  .badge-blue { background: #d6e8f5; color: var(--accent2); }
+  .badge-grey { background: #eee; color: #666; }
+
+  /* ── ALERT BOXES ── */
+  .alert {
+    border-left: 3px solid;
+    padding: 14px 18px;
+    margin: 16px 0;
+    border-radius: 0 4px 4px 0;
+  }
+  .alert-red { border-color: var(--red); background: #fef7f5; }
+  .alert-amber { border-color: var(--amber); background: #fefaf2; }
+  .alert-green { border-color: var(--green); background: #f3faf6; }
+  .alert-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+    font-weight: 500;
+  }
+  .alert-red .alert-title { color: var(--red); }
+  .alert-amber .alert-title { color: var(--amber); }
+  .alert-green .alert-title { color: var(--green); }
+
+  /* ── PROGRESS BARS ── */
+  .progress-row { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+  .progress-name { width: 120px; font-size: 12px; color: var(--ink); flex-shrink: 0; }
+  .progress-track { flex: 1; background: #ddd8ce; border-radius: 2px; height: 8px; }
+  .progress-fill { height: 8px; border-radius: 2px; background: var(--accent2); }
+  .progress-val { width: 50px; font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted); text-align: right; }
+
+  /* ── TWO-COL GRID ── */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  @media (max-width: 640px) { .two-col { grid-template-columns: 1fr; } }
+
+  /* ── PILL LIST ── */
+  .pill-list { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
+  .pill {
+    background: var(--cream);
+    border: 1px solid #ccc8be;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    color: var(--ink);
+  }
+  .pill.leaving { background: #fde8e0; border-color: #f5a89a; color: var(--red); }
+  .pill.contract { background: #e8f0fa; border-color: #a0b8d8; color: var(--accent2); }
+  .pill.sales { background: #f0f8ec; border-color: #a8ccaa; color: var(--green); }
+
+  .mono { font-family: 'DM Mono', monospace; }
+  .muted { color: var(--muted); }
+
+  hr.rule { border: none; border-top: 1px solid #ccc8be; margin: 20px 0; }
+
+  .tab-pill {
+    display: inline-block;
+    background: var(--cream);
+    border: 1px solid #ccc;
+    padding: 3px 10px;
+    border-radius: 4px;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    margin: 2px;
+  }
+</style>
+</head>
+<body>
+
+<!-- COVER -->
+<div class="cover">
+  <div class="cover-label">TripFactory · Internal Review</div>
+  <h1>CAM Department<br><em>Assessment Report</em></h1>
+  <div class="cover-sub">Contract Account Management — Bangalore Operations</div>
+  <div class="cover-meta">
+    <div class="meta-item"><label>Prepared for</label><span>Ajay Kawa</span></div>
+    <div class="meta-item"><label>Prepared by</label><span>Disha Mooljee</span></div>
+    <div class="meta-item"><label>Report Date</label><span>April 10, 2026</span></div>
+    <div class="meta-item"><label>Data Sources</label><span>CAM_INTERNAL.xlsx &amp; Product_Tour_Mapping.xlsx</span></div>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- 1. EXECUTIVE SUMMARY -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">01</span>
+      <h2>Executive Summary</h2>
+    </div>
+
+    <div class="stat-row">
+      <div class="stat-card">
+        <div class="num">~3,400</div>
+        <div class="label">Total Contract Records</div>
+      </div>
+      <div class="stat-card">
+        <div class="num green">~1,700</div>
+        <div class="label">Live Contracts</div>
+      </div>
+      <div class="stat-card">
+        <div class="num accent">~116</div>
+        <div class="label">Pending / Under Audit</div>
+      </div>
+      <div class="stat-card">
+        <div class="num amber">2,237</div>
+        <div class="label">Tours Mapped</div>
+      </div>
+      <div class="stat-card">
+        <div class="num accent">163</div>
+        <div class="label">Pending Tour Errors</div>
+      </div>
+    </div>
+
+    <p>The CAM department operates across two main workstreams: <strong>Contract Loading</strong> (hotel rate uploading, quality checks, stop-sale management) and <strong>Activity/Tour Content Mapping</strong> (via Bokun/FareHarbor channel managers, API mapping for Expedia and Agoda). A third stream — <strong>Sales Support / Quote Assistance</strong> — is handled by Disha's direct reports in Bangalore.</p>
+
+    <p>The data reveals a functioning but process-heavy operation with significant inconsistency in how records are tracked across multiple fragmented spreadsheet tabs. Headcount stands at approximately <strong>22 staff across contract loading</strong>, with <strong>8 temporary contract staff</strong> on the tour API mapping project (exiting end-April 2026), and <strong>11 sales-support staff</strong> in Bangalore under Disha.</p>
+
+    <div class="alert alert-amber">
+      <div class="alert-title">⚠ Key Risk</div>
+      Several pending contracts date back to <strong>September 2025</strong> (6+ months), indicating blockers around missing Supplier IDs, audit holds, and incomplete contract documentation that are not being cleared efficiently.
+    </div>
+  </div>
+
+  <!-- 2. TEAM & RESOURCES -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">02</span>
+      <h2>Team Structure &amp; Resources</h2>
+    </div>
+
+    <div class="two-col">
+      <div>
+        <p style="font-family:'DM Mono',monospace;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent2);margin-bottom:10px;">Contract Loading — CAM (Bangalore Office)</p>
+        <div class="pill-list">
+          <span class="pill contract">Yuvraj</span>
+          <span class="pill contract">Praveen</span>
+          <span class="pill contract">Joseph</span>
+          <span class="pill contract">Nikitha</span>
+          <span class="pill contract">Lakshmi</span>
+          <span class="pill contract">Girish</span>
+          <span class="pill contract">Vasumitha</span>
+          <span class="pill contract">Sriramana</span>
+          <span class="pill contract">Sheetal</span>
+          <span class="pill contract">Nandhini</span>
+          <span class="pill contract">Firdose</span>
+          <span class="pill leaving">Sandhya (on notice)</span>
+        </div>
+        <p class="muted" style="font-size:12px;margin-top:8px;">12 staff; Sandhya departing within ~1 week of report date.</p>
+      </div>
+      <div>
+        <p style="font-family:'DM Mono',monospace;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--red);margin-bottom:10px;">Tour API Mapping — Contract / WFH (Leaving End-April 2026)</p>
+        <div class="pill-list">
+          <span class="pill leaving">Bushra</span>
+          <span class="pill leaving">Chandra</span>
+          <span class="pill leaving">Raghu</span>
+          <span class="pill leaving">Pallavi</span>
+          <span class="pill leaving">Ashna</span>
+          <span class="pill leaving">Sougata</span>
+          <span class="pill leaving">Rahul</span>
+        </div>
+        <p class="muted" style="font-size:12px;margin-top:8px;">7 contractors hired for the tour mapping project. All leaving end-April 2026.</p>
+      </div>
+    </div>
+
+    <hr class="rule">
+
+    <div>
+      <p style="font-family:'DM Mono',monospace;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--green);margin-bottom:10px;">Sales Support &amp; Content — Bangalore (Reports to Disha)</p>
+      <div class="pill-list">
+        <span class="pill sales">Ravitej</span>
+        <span class="pill sales">Manisha</span>
+        <span class="pill sales">Shreyas</span>
+        <span class="pill sales">Diana</span>
+        <span class="pill sales">Chethana</span>
+        <span class="pill sales">Aishwarya</span>
+        <span class="pill sales">Raghav</span>
+        <span class="pill sales">Mallikarjun</span>
+        <span class="pill sales">Asha</span>
+        <span class="pill sales">Indu</span>
+        <span class="pill sales">Shakthi</span>
+      </div>
+      <p class="muted" style="font-size:12px;margin-top:8px;">11 staff covering quote assistance, activity &amp; tour static content, hotel API content mapping (Expedia/Agoda).</p>
+    </div>
+
+    <div class="alert alert-amber" style="margin-top:20px;">
+      <div class="alert-title">Headcount Gap Note</div>
+      Ajay was advised 40–60 staff report into contract loading. The data visible in the spreadsheets identifies approximately 22 named individuals. Either a significant portion of the team is not tracked in these sheets, or there is a discrepancy in the reported headcount that warrants clarification.
+    </div>
+  </div>
+
+  <!-- 3. CONTRACT LOADING PRODUCTIVITY -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">03</span>
+      <h2>Contract Upload Productivity</h2>
+    </div>
+
+    <p>The <strong>Upload Report</strong> sheet contains ~3,427 contract upload records across multiple destinations. The following breakdown shows individual output based on upload attribution in the data:</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Team Member</th><th>Uploads (approx)</th><th>Key Destinations</th><th>Assessment</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>Joseph</strong></td><td>~612</td><td>Bali, Neil Island, Maldives, Malaysia</td><td><span class="badge badge-green">High Output</span></td></tr>
+          <tr><td><strong>Lakshmi</strong></td><td>~549</td><td>Dubai, Singapore, Thailand</td><td><span class="badge badge-green">High Output</span></td></tr>
+          <tr><td><strong>Praveen</strong></td><td>~437</td><td>Maldives, Dubai, Singapore, Mauritius</td><td><span class="badge badge-green">High Output</span></td></tr>
+          <tr><td><strong>Nikitha</strong></td><td>~375</td><td>Dubai, Maldives</td><td><span class="badge badge-green">High Output</span></td></tr>
+          <tr><td><strong>Girish</strong></td><td>~124</td><td>Mauritius, Vietnam</td><td><span class="badge badge-amber">Moderate</span></td></tr>
+          <tr><td><strong>Humera</strong></td><td>~121</td><td>Dubai, Thailand</td><td><span class="badge badge-amber">Moderate</span></td></tr>
+          <tr><td><strong>Sriramana</strong></td><td>~57</td><td>Dubai, Mauritius, Maldives</td><td><span class="badge badge-amber">Lower Volume</span></td></tr>
+          <tr><td><strong>Vasumitha G</strong></td><td>~24</td><td>Stop Sales (Hanoi, Pattaya, Bali, Maldives)</td><td><span class="badge badge-amber">Stop Sale Focus</span></td></tr>
+          <tr><td><strong>Firdose</strong></td><td>~36</td><td>Dubai</td><td><span class="badge badge-amber">Lower Volume</span></td></tr>
+          <tr><td><strong>Nandhini</strong></td><td>~14</td><td>Stop Sales (Philippines, Bangkok, Malaysia)</td><td><span class="badge badge-amber">Stop Sale Focus</span></td></tr>
+          <tr><td><strong>Chandana</strong></td><td>~58</td><td>Dubai</td><td><span class="badge badge-amber">Moderate</span></td></tr>
+          <tr><td><strong>Sandhya</strong></td><td>~156 (QC only)</td><td>Quality Check — not uploading</td><td><span class="badge badge-grey">QC Role</span></td></tr>
+          <tr><td><strong>Sheetal</strong></td><td>~61 (QC + SS)</td><td>Stop Sales: Singapore, Phuket</td><td><span class="badge badge-amber">Stop Sale + QC</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p class="muted" style="font-size:12px;">Note: Upload counts normalised from raw data; some name variations (e.g. "joseph" vs "Joseph") merged manually.</p>
+
+    <div class="alert alert-red">
+      <div class="alert-title">⚠ Under-utilisation Flag</div>
+      Several team members (Vasumitha, Nandhini, Sheetal, Girish, Sriramana) are primarily focused on <strong>stop-sale management</strong> rather than new contract uploads. While this is a necessary function, their volume in the upload report is low relative to capacity. It is unclear whether this reflects specialisation or capacity sitting idle.
+    </div>
+
+    <!-- Quality Check -->
+    <p style="margin-top:20px;">The <strong>Quality Check sheet</strong> shows 1,065 records:</p>
+    <div class="stat-row" style="margin-top:12px;">
+      <div class="stat-card"><div class="num green">638</div><div class="label">Completed QC</div></div>
+      <div class="stat-card"><div class="num accent">64</div><div class="label">QC Pending</div></div>
+      <div class="stat-card"><div class="num amber">21</div><div class="label">On Hold</div></div>
+      <div class="stat-card"><div class="num">13</div><div class="label">Not Assigned</div></div>
+    </div>
+
+    <p>Quality checks are distributed across: <strong>Sandhya</strong> (156), <strong>Vasumitha G</strong> (114), <strong>Humera</strong> (109), <strong>Sriramana</strong> (96), <strong>Sheetal</strong> (61), <strong>Nandhini</strong> (60). Sandhya's departure creates an immediate QC capacity gap.</p>
+  </div>
+
+  <!-- 4. PENDING CONTRACTS -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">04</span>
+      <h2>Pending Contracts Analysis</h2>
+    </div>
+
+    <div class="stat-row">
+      <div class="stat-card"><div class="num accent">~30</div><div class="label">Currently Pending</div></div>
+      <div class="stat-card"><div class="num amber">6+</div><div class="label">Months (Oldest Pending)</div></div>
+      <div class="stat-card"><div class="num">2–7</div><div class="label">Typical WIP Queue</div></div>
+    </div>
+
+    <p>The <strong>"daily contractPromo Pending"</strong> sheet (184 rows including historical data) shows an active pending queue going back to <strong>September 29, 2025</strong>. As of the most recent entries, the current unresolved pending contracts include:</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Destination</th><th>Hotel / Contract</th><th>Status</th><th>Date Logged</th><th>Aging</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Thailand</td><td>Ban Sainai Resort</td><td><span class="badge badge-red">Pending</span></td><td>No date</td><td><span class="badge badge-red">Unknown</span></td></tr>
+          <tr><td>Thailand</td><td>Apple A Day Resort Krabi</td><td><span class="badge badge-red">Pending</span></td><td>29-Sep-25</td><td><span class="badge badge-red">6+ months</span></td></tr>
+          <tr><td>Bali</td><td>Om Ham Corporate</td><td><span class="badge badge-red">Pending</span></td><td>29-Sep-25</td><td><span class="badge badge-red">6+ months</span></td></tr>
+          <tr><td>Thailand</td><td>The Capuchin Hotel</td><td><span class="badge badge-red">Pending</span></td><td>29-Sep-25</td><td><span class="badge badge-red">6+ months</span></td></tr>
+          <tr><td>Thailand</td><td>The Berkeley Hotel Pratunam</td><td><span class="badge badge-amber">Under Audit</span></td><td>29-Sep-25</td><td><span class="badge badge-red">6+ months</span></td></tr>
+          <tr><td>Dubai</td><td>Mercure Barsha Heights</td><td><span class="badge badge-red">Pending</span></td><td>29-Sep-25</td><td><span class="badge badge-red">6+ months</span></td></tr>
+          <tr><td>Dubai</td><td>JW Marriott Marquis Hotel Dubai</td><td><span class="badge badge-red">Pending</span></td><td>29-Sep-25</td><td><span class="badge badge-red">6+ months</span></td></tr>
+          <tr><td>Dubai</td><td>Taj Jumeirah Lake Towers</td><td><span class="badge badge-red">Pending (×2)</span></td><td>29-Sep-25</td><td><span class="badge badge-red">6+ months</span></td></tr>
+          <tr><td>Dubai</td><td>Sheraton Grand Hotel</td><td><span class="badge badge-red">Pending</span></td><td>10-Oct-25</td><td><span class="badge badge-red">~6 months</span></td></tr>
+          <tr><td>Dubai</td><td>Crowne Plaza Hotel Dubai (Jumeirah)</td><td><span class="badge badge-red">Pending</span></td><td>Oct-25</td><td><span class="badge badge-red">~5–6 months</span></td></tr>
+          <tr><td>Dubai</td><td>Crowne Plaza Hotel Dubai Deira</td><td><span class="badge badge-red">Pending</span></td><td>Oct-25</td><td><span class="badge badge-red">~5–6 months</span></td></tr>
+          <tr><td>Various</td><td>Maldives — Villa Nautica, Villa Park</td><td><span class="badge badge-amber">Listed</span></td><td>No date</td><td>—</td></tr>
+          <tr><td>Various</td><td>Concorde Hotel Fujairah</td><td><span class="badge badge-red">Pending</span></td><td>09-Oct-25</td><td><span class="badge badge-red">~6 months</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="alert alert-red">
+      <div class="alert-title">Primary Blockers on Pending Contracts</div>
+      Based on the data, the main reasons contracts remain pending are: (1) <strong>No Supplier ID</strong> (multiple Thailand and Bali entries), (2) <strong>Under audit / need contract</strong> documentation, (3) <strong>Cancellation policy missing</strong>, and (4) contracts awaiting further internal querying or approval. No automated escalation or aging alert appears to be in place.
+    </div>
+  </div>
+
+  <!-- 5. STOP-SALE & INVENTORY MANAGEMENT -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">05</span>
+      <h2>Stop-Sale &amp; Inventory Management</h2>
+    </div>
+
+    <p>Stop-sale management is a daily operational function with dedicated individual-level sheets. The data confirms active tracking through March 2026 — the most recent activity in the sheets.</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Staff Member</th><th>Function</th><th>Last Active (Data)</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td>Nandhini</td><td>Stop Sales — Malaysia, Philippines, Thailand</td><td>Mar 16–17, 2026</td><td>Active SS record sheet</td></tr>
+          <tr><td>Sheetal V</td><td>Stop Sales — Singapore, Phuket</td><td>Mar 17, 2026</td><td>Active SS record sheet</td></tr>
+          <tr><td>Vasumitha G</td><td>Stop Sales — Hanoi, Pattaya, Bali, Maldives</td><td>Mar 21, 2026</td><td>Latest entry in data</td></tr>
+          <tr><td>Sriramana</td><td>Stop Sales — Bali, Singapore, Phuket, Maldives</td><td>Mar 16–20, 2026</td><td>Ramana sheet, multiple destinations</td></tr>
+          <tr><td>Praveen</td><td>Maldives contract uploads + stop sales</td><td>Mar 2026</td><td>Highest Maldives volume</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>The <strong>DAILY SS REPORT</strong> sheet (911 rows) captures daily stop-sale mail acknowledgements and updates across the whole team, logging ~Mar 17, 2026 as the most recent date visible in the data structure. The Maldives and Mauritius destination reports show all active hotels are <span class="badge badge-green">Live</span> with stop sales updated in March 2026.</p>
+  </div>
+
+  <!-- 6. ACTIVITY / TOUR MAPPING -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">06</span>
+      <h2>Activity &amp; Tour Content Mapping</h2>
+    </div>
+
+    <p>The <strong>Product Tour Mapping</strong> file tracks API tour content mapping via <strong>Bokun</strong> and <strong>FareHarbor</strong> channel managers, covering primarily European destinations (France, Ireland, Spain, Italy, Germany). This work is conducted by the 7 temporary contractors (exiting end-April 2026).</p>
+
+    <div class="stat-row">
+      <div class="stat-card"><div class="num">2,237</div><div class="label">Total Tours in Master Sheet</div></div>
+      <div class="stat-card"><div class="num green">~356</div><div class="label">Audited (Audit List)</div></div>
+      <div class="stat-card"><div class="num accent">163</div><div class="label">Pending Errors</div></div>
+      <div class="stat-card"><div class="num amber">9</div><div class="label">Unresolved Error Tours</div></div>
+    </div>
+
+    <p>Individual mapper productivity across the contract period:</p>
+
+    <div style="margin: 20px 0;">
+      <div class="progress-row">
+        <div class="progress-name">Bushra</div>
+        <div class="progress-track"><div class="progress-fill" style="width:100%"></div></div>
+        <div class="progress-val">737 tours</div>
+      </div>
+      <div class="progress-row">
+        <div class="progress-name">SOUGATA</div>
+        <div class="progress-track"><div class="progress-fill" style="width:76%"></div></div>
+        <div class="progress-val">562 tours</div>
+      </div>
+      <div class="progress-row">
+        <div class="progress-name">Rahul</div>
+        <div class="progress-track"><div class="progress-fill" style="width:82%"></div></div>
+        <div class="progress-val">604 tours</div>
+      </div>
+      <div class="progress-row">
+        <div class="progress-name">Raghu S T</div>
+        <div class="progress-track"><div class="progress-fill" style="width:60%"></div></div>
+        <div class="progress-val">442 tours</div>
+      </div>
+      <div class="progress-row">
+        <div class="progress-name">Pallavi</div>
+        <div class="progress-track"><div class="progress-fill" style="width:66%"></div></div>
+        <div class="progress-val">485 tours</div>
+      </div>
+      <div class="progress-row">
+        <div class="progress-name">Ashna</div>
+        <div class="progress-track"><div class="progress-fill" style="width:67%"></div></div>
+        <div class="progress-val">491 tours</div>
+      </div>
+      <div class="progress-row">
+        <div class="progress-name">Chandra</div>
+        <div class="progress-track"><div class="progress-fill" style="width:63%"></div></div>
+        <div class="progress-val">466 tours</div>
+      </div>
+      <div class="progress-row">
+        <div class="progress-name">SaiNithin</div>
+        <div class="progress-track"><div class="progress-fill" style="width:21%"></div></div>
+        <div class="progress-val">158 tours</div>
+      </div>
+    </div>
+
+    <p>Audit completion rate varies significantly across mappers. Bushra leads total volume but has a lower audit completion rate. Sougata has the best audit completion (251 out of 562 confirmed). Many tour entries across all mappers show the audit column blank, suggesting auditing is a bottleneck or is being done externally and not marked back on individual sheets.</p>
+
+    <div class="table-wrap" style="margin-top:20px;">
+      <table>
+        <thead><tr><th>Error Type</th><th>Count (Pending)</th><th>Action Required</th></tr></thead>
+        <tbody>
+          <tr><td>Price Error</td><td>~12</td><td><span class="badge badge-red">System fix needed</span></td></tr>
+          <tr><td>City not available on system</td><td>~8</td><td><span class="badge badge-amber">Tech escalation</span></td></tr>
+          <tr><td>Unable to import tour</td><td>~18</td><td><span class="badge badge-amber">Tech escalation</span></td></tr>
+          <tr><td>API empty / no tours</td><td>~3</td><td><span class="badge badge-grey">Supplier side</span></td></tr>
+          <tr><td>Operator name missing / error</td><td>~15</td><td><span class="badge badge-amber">Content fix</span></td></tr>
+          <tr><td>Activity duration not mentioned</td><td>~6</td><td><span class="badge badge-amber">Content fix</span></td></tr>
+          <tr><td>201 save error</td><td>~5</td><td><span class="badge badge-red">System fix needed</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="alert alert-amber">
+      <div class="alert-title">⚠ Risk — Contractor Exit</div>
+      All 7 tour mapping contractors leave end-April 2026. With 163 pending errors still open and the full tour catalogue not audited, there is a risk of leaving significant incomplete work. A handover plan and audit completion sprint should be initiated before end of April.
+    </div>
+  </div>
+
+  <!-- 7. DESTINATION COVERAGE -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">07</span>
+      <h2>Destination Coverage Overview</h2>
+    </div>
+
+    <p>Key destinations with active contract management tracked in the data:</p>
+
+    <div class="pill-list">
+      <span class="pill">Dubai</span>
+      <span class="pill">Maldives</span>
+      <span class="pill">Thailand (Bangkok, Pattaya, Phuket, Krabi)</span>
+      <span class="pill">Bali</span>
+      <span class="pill">Singapore</span>
+      <span class="pill">Malaysia (KL, Langkawi, Genting)</span>
+      <span class="pill">Mauritius</span>
+      <span class="pill">Vietnam</span>
+      <span class="pill">Philippines</span>
+      <span class="pill">Neil Island</span>
+      <span class="pill">Domestic (India)</span>
+    </div>
+
+    <p style="margin-top:16px;">Tour mapping destinations (via Bokun/FareHarbor):</p>
+    <div class="pill-list">
+      <span class="pill">France (Paris, Lyon, Normandy, Bordeaux, Nice)</span>
+      <span class="pill">Ireland</span>
+      <span class="pill">Spain (Marbella, Madrid)</span>
+      <span class="pill">Italy (Rome, Milan, Florence, Naples, Lake Como)</span>
+      <span class="pill">Germany (Berlin)</span>
+      <span class="pill">Greece (Athens)</span>
+      <span class="pill">Netherlands (Amsterdam)</span>
+    </div>
+
+    <div class="alert alert-amber" style="margin-top:20px;">
+      <div class="alert-title">System Issues Logged — Maldives Specifically</div>
+      A dedicated "Maldives-issues" sheet documents <strong>5 system limitations</strong>: child complementary pricing, extra night calculation errors, transfer nationality market split, length-of-stay restrictions, and green tax supplement errors. These are unresolved system constraints, not team errors.
+    </div>
+  </div>
+
+  <!-- 8. SPREADSHEET STRUCTURE HEALTH -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">08</span>
+      <h2>Spreadsheet Health &amp; Data Hygiene</h2>
+    </div>
+
+    <p>The <strong>CAM_INTERNAL.xlsx</strong> file contains <strong>41 tabs</strong>; the <strong>Product Tour Mapping</strong> file contains <strong>14 tabs</strong>. A significant number of tabs contain sparse or raw contract data with no consistent header structure.</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Sheet Name</th><th>Status</th><th>Last Meaningful Data</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td>Daily Update</td><td><span class="badge badge-green">Active</span></td><td>Oct 2025</td><td>Multi-section: contracts, follow-ups, demand report</td></tr>
+          <tr><td>Upload Report</td><td><span class="badge badge-green">Active</span></td><td>Ongoing</td><td>3,400+ rows — primary contract log</td></tr>
+          <tr><td>DAILY SS REPORT</td><td><span class="badge badge-green">Active</span></td><td>Mar 17, 2026</td><td>Stop sale tracking</td></tr>
+          <tr><td>Nandhini SS RECORD</td><td><span class="badge badge-green">Active</span></td><td>Mar 16, 2026</td><td>Individual stop sale log</td></tr>
+          <tr><td>Quality Check sheet</td><td><span class="badge badge-green">Active</span></td><td>Ongoing</td><td>1,065 records; mixed QC status</td></tr>
+          <tr><td>Sheetal stopsale</td><td><span class="badge badge-green">Active</span></td><td>Mar 17, 2026</td><td>Individual SS log</td></tr>
+          <tr><td>Daily Task</td><td><span class="badge badge-green">Active</span></td><td>Apr 10, 2026</td><td>Quote support — Joseph &amp; Lakshmi</td></tr>
+          <tr><td>Daily Tracker</td><td><span class="badge badge-amber">Stale</span></td><td>Jul 30, 2025</td><td>All zeros — not being updated</td></tr>
+          <tr><td>Maldives report</td><td><span class="badge badge-green">Active</span></td><td>Mar 2026</td><td>33 hotels, all Live</td></tr>
+          <tr><td>mauritius Report</td><td><span class="badge badge-green">Active</span></td><td>Mar 2026</td><td>7 hotels; 1 not live (Shangri-La)</td></tr>
+          <tr><td>Vasumitha G SS Report</td><td><span class="badge badge-green">Active</span></td><td>Mar 21, 2026</td><td>Individual SS log</td></tr>
+          <tr><td>daily contractPromo Pending</td><td><span class="badge badge-green">Active</span></td><td>Oct 2025</td><td>184 rows; active pending queue</td></tr>
+          <tr><td>Sheet106/108/109 (Maldives inventory)</td><td><span class="badge badge-amber">Reference</span></td><td>Mar 2026</td><td>Free-sale/On-request/Stop-sale calendars</td></tr>
+          <tr><td>Sheet76 (Joseph hotel work)</td><td><span class="badge badge-green">Active</span></td><td>Feb 2026</td><td>Hotel-level tracking with stop sale dates</td></tr>
+          <tr><td>Dhigufaru-FB, Dhigufaru-BB, Raaya, Kuramathi, Villa Park, Villa nautica</td><td><span class="badge badge-red">Empty</span></td><td>—</td><td>Multiple blank sheets — orphaned or pre-populated templates</td></tr>
+          <tr><td>Daily Tracker</td><td><span class="badge badge-red">Stale</span></td><td>Jul 2025</td><td>Designed to track daily uploads per person; all zeros, not maintained</td></tr>
+          <tr><td>Supplier id creation</td><td><span class="badge badge-amber">Reference</span></td><td>May 2025</td><td>New supplier IDs logged</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="alert alert-red">
+      <div class="alert-title">Critical Data Hygiene Issue</div>
+      The <strong>Daily Tracker</strong> sheet — designed as a KPI dashboard showing uploads per person per day — shows all zeros and dates back to July 2025. This is the most important productivity measurement tool and it is not being used. Productivity is currently only traceable by manually counting rows in the Upload Report, which is inefficient.
+    </div>
+  </div>
+
+  <!-- 9. UNDER-UTILISATION ASSESSMENT -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">09</span>
+      <h2>Under-Utilisation Assessment</h2>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Staff</th><th>Primary Activity</th><th>Risk/Observation</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>Sandhya</strong></td>
+            <td>QC only — no uploads visible</td>
+            <td><span class="badge badge-red">Leaving</span> — immediate QC capacity gap</td>
+          </tr>
+          <tr>
+            <td><strong>Vasumitha G</strong></td>
+            <td>Stop sales (Hanoi, Pattaya, Bali, Maldives)</td>
+            <td>Useful function but limited to reactive SS; could take on upload work</td>
+          </tr>
+          <tr>
+            <td><strong>Nandhini</strong></td>
+            <td>Stop sales only</td>
+            <td>Dedicated SS role — capacity for uploads unclear</td>
+          </tr>
+          <tr>
+            <td><strong>Sriramana</strong></td>
+            <td>QC + Stop sales — limited uploads</td>
+            <td>Moderate volume; dual role creates split focus</td>
+          </tr>
+          <tr>
+            <td><strong>Sheetal</strong></td>
+            <td>QC + Stop sales</td>
+            <td>Dual function; under capacity for upload work</td>
+          </tr>
+          <tr>
+            <td><strong>Girish</strong></td>
+            <td>Mauritius contracts + MA (market analysis)</td>
+            <td>Destination-specific; moderate output (124 uploads)</td>
+          </tr>
+          <tr>
+            <td><strong>Sales Support (11 staff)</strong></td>
+            <td>Quote assistance, API content mapping (Expedia/Agoda), static content</td>
+            <td>Limited visibility in current sheets — no productivity tracker found</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="alert alert-amber">
+      <div class="alert-title">Recommendation</div>
+      The Bangalore sales support team of 11 (Ravitej, Manisha, Shreyas, Diana, Chethana, Aishwarya, Raghav, Mallikarjun, Asha, Indu, Shakthi) has <strong>no dedicated tracking sheet</strong> visible in the shared data. Their output on Expedia/Agoda API content and static content is not measurable from the current data set. A dedicated tracker should be implemented immediately.
+    </div>
+  </div>
+
+  <!-- 10. RECOMMENDATIONS -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">10</span>
+      <h2>Recommendations for Streamlining</h2>
+    </div>
+
+    <div class="alert alert-green">
+      <div class="alert-title">1 — Activate the Daily Tracker</div>
+      The Daily Tracker sheet already exists in the workbook. It should be populated daily per team member to give real-time visibility of uploads, audits, and live counts. Set a weekly reporting cadence into management.
+    </div>
+
+    <div class="alert alert-green">
+      <div class="alert-title">2 — Resolve and Close Aged Pending Contracts</div>
+      Assign ownership to each of the ~30 pending contracts, particularly the 10+ items pending since September–October 2025. Establish a maximum pending period (e.g. 30 days) with escalation if Supplier ID or documentation is not received.
+    </div>
+
+    <div class="alert alert-green">
+      <div class="alert-title">3 — Plan for Sandhya's QC Handover</div>
+      With Sandhya departing, redistribute her 156 QC assignments. Vasumitha or Sheetal are natural candidates given their existing QC exposure.
+    </div>
+
+    <div class="alert alert-green">
+      <div class="alert-title">4 — Tour Mapping Handover Sprint (Before End-April 2026)</div>
+      The 7 contractors leave in under 3 weeks. Prioritise: (a) clearing the 163 pending errors, (b) ensuring all mapped tours are audited and the audit column is marked, (c) documenting all unresolved system errors for the tech team.
+    </div>
+
+    <div class="alert alert-green">
+      <div class="alert-title">5 — Create a Tracker for Sales Support Team</div>
+      The 11-person Bangalore sales support team has no visible productivity data. Introduce a daily log covering: quotes assisted, Expedia/Agoda content tasks completed, static content updated.
+    </div>
+
+    <div class="alert alert-green">
+      <div class="alert-title">6 — Consolidate Spreadsheet Tabs</div>
+      41 tabs in CAM_INTERNAL.xlsx with multiple blank/orphaned sheets creates confusion. Recommend archiving 12+ empty tabs and standardising the structure around: (1) Upload Report, (2) QC, (3) Stop Sale, (4) Pending Queue, (5) Destination Reports.
+    </div>
+
+    <div class="alert alert-amber">
+      <div class="alert-title">7 — Verify Reported Headcount</div>
+      Ajay was informed of 40–60 staff in contract loading. The sheets identify ~22. This gap should be clarified — either the additional staff are not tracked in these documents, or the number is inaccurate.
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div style="padding: 36px 0; text-align: center; border-top: 2px solid var(--ink); margin-top: 20px;">
+    <p style="font-family:'DM Mono',monospace;font-size:11px;letter-spacing:0.1em;color:var(--muted);">TRIPFACTORY · CAM INTERNAL REVIEW · APRIL 2026 · CONFIDENTIAL</p>
+    <p style="font-family:'DM Mono',monospace;font-size:10px;color:#bbb;margin-top:6px;">Data source: CAM_INTERNAL.xlsx &amp; Product_Tour_Mapping_main_file_.xlsx</p>
+  </div>
+
+</div>
+</body>
+</html>
